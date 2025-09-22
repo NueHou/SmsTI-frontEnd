@@ -1,26 +1,21 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import UsuariosPage from "./pages/UsuariosPage";
-import ChamadosPage from "./pages/ChamadosPage";
-import InventarioPage from "./pages/InventarioPage";
+import React from 'react';
+import UsuarioList from './components/usuario/UsuarioList.jsx';
+import UnidadeList from './components/unidade/UnidadeList';
+import './App.css';
 
 function App() {
   return (
-    <Router>
-      <nav style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
-        <Link to="/">Home</Link>
-        <Link to="/usuarios">Usuários</Link>
-        <Link to="/chamados">Chamados</Link>
-        <Link to="/inventario">Inventário</Link>
-      </nav>
-
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/usuarios" element={<UsuariosPage />} />
-        <Route path="/chamados" element={<ChamadosPage />} />
-        <Route path="/inventario" element={<InventarioPage />} />
-      </Routes>
-    </Router>
+    <div className="App">
+      <header className="App-header">
+        <h1>Sistema de Gestão de TI</h1>
+      </header>
+      <main>
+        {/* Você pode comentar um e descomentar o outro para testar */}
+        <UsuarioList />
+        <hr /> {/* Uma linha para separar as seções */}
+        <UnidadeList />
+      </main>
+    </div>
   );
 }
 
