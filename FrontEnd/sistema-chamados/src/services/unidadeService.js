@@ -1,47 +1,28 @@
-// A URL base da sua API para o endpoint de unidades
-const API_URL = 'http://localhost:8080/api/unidades';
+import api from './api'; // Importamos nossa instância configurada do axios
 
-// Buscar todas as unidades
+// O endpoint específico para unidades
+const ENDPOINT = '/unidades';
+
+// Função para buscar todas as unidades
 export const getAllUnidades = async () => {
-  const response = await fetch(API_URL);
-  if (!response.ok) {
-    throw new Error('Erro ao buscar unidades.');
-  }
-  return response.json();
+  const response = await api.get(ENDPOINT);
+  return response.data;
 };
 
-// Criar uma nova unidade
+// Função para criar uma nova unidade
 export const createUnidade = async (unidadeData) => {
-  const response = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(unidadeData),
-  });
-  if (!response.ok) {
-    throw new Error('Erro ao criar unidade.');
-  }
-  return response.json();
+  const response = await api.post(ENDPOINT, unidadeData);
+  return response.data;
 };
 
-// Atualizar uma unidade existente
+// Função para atualizar uma unidade existente
 export const updateUnidade = async (id, unidadeData) => {
-    const response = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(unidadeData),
-    });
-    if (!response.ok) {
-        throw new Error('Erro ao atualizar unidade.');
-    }
-    return response.json();
+  const response = await api.put(`${ENDPOINT}/${id}`, unidadeData);
+  return response.data;
 };
 
-// Deletar uma unidade
+// Função para deletar uma unidade
 export const deleteUnidade = async (id) => {
-    const response = await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE',
-    });
-    if (!response.ok) {
-        throw new Error('Erro ao deletar unidade.');
-    }
+  const response = await api.delete(`${ENDPOINT}/${id}`);
+  return response.data;
 };

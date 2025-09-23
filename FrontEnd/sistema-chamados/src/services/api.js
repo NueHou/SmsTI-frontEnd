@@ -1,19 +1,25 @@
-let usuarios = [
-  { id: 1, nome: "José", email: "jose@email.com" },
-  { id: 2, nome: "Maria", email: "maria@email.com" }
-];
+import axios from 'axios';
+import { getToken } from './authService';
 
-export const getUsuarios = async () => {
-  return usuarios;
-};
+// Cria uma instância do axios com a URL base da nossa API
+const api = axios.create({
+  baseURL: 'http://172.17.5.53:8080/api',
+});
 
-export const addUsuario = async (user) => {
-  const newUser = { ...user, id: Date.now() };
-  usuarios.push(newUser);
-  return newUser;
-};
+// "Interceptor" de requisições:
+// Antes de cada requisição ser enviada, este código é executado.
+api.interceptors.request.use(
+  (config) => {
+    const token = getToken(); // Pega o token do localStorage
+    if (token) {
+      // Se o token existir, adiciona o cabeçalho Authorization
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config; // Retorna a configuração da requisição modificada
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
-export const updateUsuario = async (user) => {
-  usuarios = usuarios.map((u) => (u.id === user.id ? user : u));
-  return user;
-};
+export default api;
