@@ -1,24 +1,40 @@
-.usuario-form {
-  margin-top: 20px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+/* --- LAYOUT PRINCIPAL --- */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
 }
-.form-group {
-  margin-bottom: 15px;
+
+/* --- BARRA DO TOPO (APPBAR) --- */
+.app-bar {
+  /* Garante que a barra superior fique acima do menu lateral */
+  z-index: 1300 !important; 
 }
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
+
+/* --- MENU LATERAL (DRAWER) --- */
+.drawer {
+  width: 240px;
+  flex-shrink: 0;
 }
-.form-group input, .form-group select {
-  width: 100%;
-  padding: 8px;
+
+.drawer-paper {
+  width: 240px;
   box-sizing: border-box;
 }
-.unidade-form {
-  margin-top: 20px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+
+/* --- ÁREA DE CONTEÚDO PRINCIPAL --- */
+.main-content {
+  flex-grow: 1;
+  padding: 24px; /* Equivalente a p: 3 do MUI */
+  background-color: #121212; /* Cor de fundo padrão do nosso tema dark */
+}
+
+/* --- FORMULÁRIO GENÉRICO --- */
+.form-section-divider {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+/* --- BOTÕES DE AÇÃO DO FORMULÁRIO --- */
+.form-actions {
+  margin-top: 24px;
 }
