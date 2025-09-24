@@ -5,24 +5,24 @@ const ENDPOINT = '/unidades';
 
 // Função para buscar todas as unidades
 export const getAllUnidades = async () => {
-  const response = await api.get(ENDPOINT);
+  const response = await api.get(`${ENDPOINT}/listar`);
   return response.data;
 };
 
 // Função para criar uma nova unidade
 export const createUnidade = async (unidadeData) => {
-  const response = await api.post(ENDPOINT, unidadeData);
+  const response = await api.post(`${ENDPOINT}/cadastrar`, unidadeData);
   return response.data;
 };
 
 // Função para atualizar uma unidade existente
 export const updateUnidade = async (id, unidadeData) => {
-  const response = await api.put(`${ENDPOINT}/${id}`, unidadeData);
+  const response = await api.put(`${ENDPOINT}/alterar/${id}`, unidadeData);
   return response.data;
 };
 
 // Função para deletar uma unidade
 export const deleteUnidade = async (id) => {
-  const response = await api.delete(`${ENDPOINT}/${id}`);
+  const response = await api.delete(`${ENDPOINT}/deletar/${id}`);
   return response.data;
 };

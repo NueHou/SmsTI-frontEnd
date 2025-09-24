@@ -3,7 +3,7 @@ import { getToken } from './authService';
 
 // Cria uma instância do axios com a URL base da nossa API
 const api = axios.create({
-  baseURL: 'http://172.17.5.53:8080/api',
+  baseURL: 'http://172.17.5.59:8080/api',
 });
 
 // "Interceptor" de requisições:

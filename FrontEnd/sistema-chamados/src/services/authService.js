@@ -1,5 +1,5 @@
 // O endpoint de login do seu back-end Spring Security
-const API_URL = 'http://172.17.5.53:8080/api/auth/login';
+const API_URL = 'http://172.17.5.59:8080/api/auth/login';
 
 // Função de Login
 export const login = async (credentials) => {

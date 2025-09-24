@@ -1,10 +1,25 @@
 import React, { useState, useEffect } from 'react';
-// 1. Importamos o `updateUsuario`
 import { createUsuario, updateUsuario } from '../../services/usuarioService';
-import { Role, Status } from '../../utils/constants';
+import { Role, Status } from '../../utils/constants'; // Garanta que o nome seja 'Status'
 
-// 2. Recebemos as novas props
-const UsuarioForm = ({ onUsuarioAdicionado, usuarioEmEdicao, onUsuarioAtualizado }) => {
+// --- IMPORTANDO COMPONENTES DO MUI ---
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Paper,
+  Alert,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Grid,
+  Stack // Para alinhar os botões
+} from '@mui/material';
+
+const UsuarioForm = ({ onUsuarioAdicionado, usuarioEmEdicao, onUsuarioAtualizado, onCancel }) => {
+  // --- SUA LÓGICA DE ESTADO E FUNÇÕES PERMANECE A MESMA ---
   const [formData, setFormData] = useState({
     nome: '', email: '', senha: '', telefone: '', status: Status.ATIVO, role: Role.USUARIO,
   });
@@ -12,25 +27,22 @@ const UsuarioForm = ({ onUsuarioAdicionado, usuarioEmEdicao, onUsuarioAtualizado
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
-  // 3. useEffect para preencher o formulário quando um usuário for passado para edição
   useEffect(() => {
     if (usuarioEmEdicao) {
-      // Preenchemos o formulário com os dados do usuário, exceto a senha
       setFormData({
         nome: usuarioEmEdicao.nome,
         email: usuarioEmEdicao.email,
-        senha: '', // Deixamos a senha em branco por segurança
+        senha: '',
         telefone: usuarioEmEdicao.telefone,
         status: usuarioEmEdicao.status,
         role: usuarioEmEdicao.role,
       });
     } else {
-      // Limpa o formulário se estiver em modo de criação
       setFormData({
         nome: '', email: '', senha: '', telefone: '', status: Status.ATIVO, role: Role.USUARIO,
       });
     }
-  }, [usuarioEmEdicao]); // Este efeito roda sempre que `usuarioEmEdicao` mudar
+  }, [usuarioEmEdicao]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,27 +54,20 @@ const UsuarioForm = ({ onUsuarioAdicionado, usuarioEmEdicao, onUsuarioAtualizado
     setError(null);
     setSuccess(null);
 
-    // 4. Lógica para decidir entre criar ou atualizar
     try {
       if (usuarioEmEdicao) {
-        // MODO EDIÇÃO
         const dadosParaAtualizar = { ...formData };
-        // Se a senha estiver em branco, não a enviamos para o backend
         if (!dadosParaAtualizar.senha) {
           delete dadosParaAtualizar.senha;
         }
         const usuarioAtualizado = await updateUsuario(usuarioEmEdicao.id, dadosParaAtualizar);
         setSuccess(`Usuário "${usuarioAtualizado.nome}" atualizado com sucesso!`);
-        if (onUsuarioAtualizado) {
-          onUsuarioAtualizado(usuarioAtualizado);
-        }
+        // Adiciona um pequeno delay antes de fechar para o usuário ver a mensagem
+        setTimeout(() => onUsuarioAtualizado(usuarioAtualizado), 1500);
       } else {
-        // MODO CRIAÇÃO
         const novoUsuario = await createUsuario(formData);
         setSuccess(`Usuário "${novoUsuario.nome}" criado com sucesso!`);
-        if (onUsuarioAdicionado) {
-          onUsuarioAdicionado(novoUsuario);
-        }
+        setTimeout(() => onUsuarioAdicionado(novoUsuario), 1500);
       }
     } catch (err) {
       setError(`Erro ao salvar o usuário. Tente novamente.`);
@@ -70,50 +75,105 @@ const UsuarioForm = ({ onUsuarioAdicionado, usuarioEmEdicao, onUsuarioAtualizado
     }
   };
 
+  // --- O JSX É REESCRITO COM COMPONENTES MUI ---
   return (
-    // 5. Título e botão dinâmicos
-    <form onSubmit={handleSubmit} className="usuario-form">
-      <h3>{usuarioEmEdicao ? 'Editar Usuário' : 'Adicionar Novo Usuário'}</h3>
+    <Paper elevation={3} sx={{ p: 4, mt: 2 }}>
+      <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
+        {usuarioEmEdicao ? 'Editar Usuário' : 'Adicionar Novo Usuário'}
+      </Typography>
       
-      {success && <p style={{ color: 'green' }}>{success}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <Box component="form" onSubmit={handleSubmit}>
+        {/* Usamos Grid para organizar o formulário em colunas */}
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              required
+              name="nome"
+              label="Nome Completo"
+              value={formData.nome}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              required
+              type="email"
+              name="email"
+              label="Email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              type="password"
+              name="senha"
+              label="Nova Senha"
+              placeholder="Deixe em branco para não alterar"
+              value={formData.senha}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              name="telefone"
+              label="Telefone"
+              value={formData.telefone}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel id="status-select-label">Status</InputLabel>
+              <Select
+                labelId="status-select-label"
+                name="status"
+                value={formData.status}
+                label="Status"
+                onChange={handleChange}
+              >
+                <MenuItem value={Status.ATIVO}>Ativo</MenuItem>
+                <MenuItem value={Status.INATIVO}>Inativo</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel id="role-select-label">Perfil (Role)</InputLabel>
+              <Select
+                labelId="role-select-label"
+                name="role"
+                value={formData.role}
+                label="Perfil (Role)"
+                onChange={handleChange}
+              >
+                <MenuItem value={Role.USUARIO}>Usuário</MenuItem>
+                <MenuItem value={Role.TECNICO}>Técnico</MenuItem>
+                <MenuItem value={Role.ADMIN}>Admin</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
 
-      {/* Os inputs continuam os mesmos... */}
-      <div className="form-group">
-        <label>Nome:</label>
-        <input type="text" name="nome" value={formData.nome} onChange={handleChange} required />
-      </div>
-      <div className="form-group">
-        <label>Email:</label>
-        <input type="email" name="email" value={formData.email} onChange={handleChange} required />
-      </div>
-      <div className="form-group">
-        <label>Nova Senha:</label>
-        <input type="password" name="senha" value={formData.senha} onChange={handleChange} placeholder="Deixe em branco para não alterar" />
-      </div>
-      {/* ...resto do formulário... */}
-      <div className="form-group">
-        <label>Telefone:</label>
-        <input type="text" name="telefone" value={formData.telefone} onChange={handleChange} />
-      </div>
-      <div className="form-group">
-        <label>Status:</label>
-        <select name="status" value={formData.status} onChange={handleChange}>
-          <option value={Status.ATIVO}>Ativo</option>
-          <option value={Status.INATIVO}>Inativo</option>
-        </select>
-      </div>
-      <div className="form-group">
-        <label>Perfil (Role):</label>
-        <select name="role" value={formData.role} onChange={handleChange}>
-          <option value={Role.USUARIO}>Usuário</option>
-          <option value={Role.TECNICO}>Técnico</option>
-          <option value={Role.ADMIN}>Admin</option>
-        </select>
-      </div>
-      
-      <button type="submit">{usuarioEmEdicao ? 'Salvar Alterações' : 'Salvar Usuário'}</button>
-    </form>
+        {/* Mensagens de Sucesso e Erro */}
+        {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
+        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+
+        {/* Botões de Ação */}
+        <Stack direction="row" spacing={2} sx={{ mt: 3 }}>
+          <Button type="submit" variant="contained">
+            {usuarioEmEdicao ? 'Salvar Alterações' : 'Salvar Usuário'}
+          </Button>
+          <Button variant="outlined" onClick={onCancel}>
+            Cancelar
+          </Button>
+        </Stack>
+      </Box>
+    </Paper>
   );
 };
 

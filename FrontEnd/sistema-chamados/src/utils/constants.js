@@ -2,12 +2,38 @@
 // como os papéis e status dos usuários.
 
 export const Role = {
-  ADMIN: 'Nivel 3',
-  TECNICO: 'Nivel 2',
-  USUARIO: 'Nivel 1'
+  ADMIN: 'Nivel3',
+  TECNICO: 'Nivel2',
+  USUARIO: 'Nivel1'
 };
 
 export const Status = {
-  ATIVO: 'ATIVO',
-  INATIVO: 'INATIVO'
+  PENDENTE: 'PENDENTE',
+  ARQUIVADO: 'ARQUIVADO',
+};
+
+export const Categoria = {
+  HARDWARE: "HARDWARE",
+  SOFTWARE: "SOFTWARE",
+  REDES: "REDES", 
+  SEGURANCA: "SEGURANCA",
+  DADOS_E_ARMAZENAMENTO:"DADOS_E_ARMAZENAMENTO", 
+  SISTEMA_OPERACIONAL:"SISTEMA_OPERACIONAL",
+  PERIFERICOS:"PERIFERICOS",
+  SERVICOS_CORPORATIVOS:"SERVICOS_CORPORATIVOS",
+  ACESSO_E_SENHA:"ACESSO_E_SENHA",
+  CONFIGURACAO:"CONFIGURACAO",
+  OUTROS:"OUTROS"
+};
+
+export const Prioridade = {
+  BAIXA: 'Baixa',
+  MEDIA: 'Média',
+  ALTA: 'Alta',
+  URGENTE: 'Urgente',
+};
+
+export const StatusUsuario = {
+  ATIVO: 'STATUS_ATIVO',
+  INATIVO: 'STATUS_INATIVO',
 };

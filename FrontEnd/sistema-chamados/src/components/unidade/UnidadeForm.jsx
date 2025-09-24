@@ -1,33 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { createUnidade, updateUnidade } from '../../services/unidadeService';
+import { StatusUsuario } from '../../utils/constants';
 
 const UnidadeForm = ({ onFormSubmit, unidadeEmEdicao, onCancel }) => {
+  // 1. ESTADO ATUALIZADO com todos os campos do endereço
   const [formData, setFormData] = useState({
     nome: '',
     telefone: '',
-    status: 'ATIVO',
-    logradouro: '', // Campo para o endereço
-    cidade: '',     // Campo para o endereço
+    StatusUsuario: '',
+    rua: '',
+    numero: '',
+    complemento: '',
+    bairro: '',
+    cidade: '',
+    estado: '',
+    cep: '',
     nomeResponsavel: '',
     telefoneResponsavel: ''
   });
   const [error, setError] = useState(null);
 
+  // 2. USEEFFECT ATUALIZADO para preencher todos os campos na edição
   useEffect(() => {
     if (unidadeEmEdicao) {
       setFormData({
-        nome: unidadeEmEdicao.nome,
-        telefone: unidadeEmEdicao.telefone,
-        status: unidadeEmEdicao.status,
-        logradouro: unidadeEmEdicao.endereco?.logradouro || '', // Acessando o campo aninhado
+        nome: unidadeEmEdicao.nome || '',
+        telefone: unidadeEmEdicao.telefone || '',
+        StatusUsuario: unidadeEmEdicao.statusUnidade || '',
+        rua: unidadeEmEdicao.endereco?.rua || '',
+        numero: unidadeEmEdicao.endereco?.numero || '',
+        complemento: unidadeEmEdicao.endereco?.complemento || '',
+        bairro: unidadeEmEdicao.endereco?.bairro || '',
         cidade: unidadeEmEdicao.endereco?.cidade || '',
-        nomeResponsavel: unidadeEmEdicao.nomeResponsavel,
-        telefoneResponsavel: unidadeEmEdicao.telefoneResponsavel
+        estado: unidadeEmEdicao.endereco?.estado || '',
+        cep: unidadeEmEdicao.endereco?.cep || '',
+        nomeResponsavel: unidadeEmEdicao.nomeResponsavel || '',
+        telefoneResponsavel: unidadeEmEdicao.telefoneResponsavel || ''
       });
     } else {
-      // Limpa o formulário
+      // Limpa o formulário para um novo registro
       setFormData({
-        nome: '', telefone: '', status: 'ATIVO', logradouro: '', cidade: '', nomeResponsavel: '', telefoneResponsavel: ''
+        nome: '', telefone: '', StatusUsuario: '',  rua: '', numero: '', complemento: '',
+        bairro: '', cidade: '', estado: '', cep: '', nomeResponsavel: '', telefoneResponsavel: ''
       });
     }
   }, [unidadeEmEdicao]);
@@ -37,16 +51,26 @@ const UnidadeForm = ({ onFormSubmit, unidadeEmEdicao, onCancel }) => {
     setFormData(prevState => ({ ...prevState, [name]: value }));
   };
 
+  console.log(formData);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     
-    // Monta o objeto final para enviar, com o endereço aninhado
+    // 3. HANDLESUBMIT ATUALIZADO para montar o objeto 'endereco' completo
     const dataToSend = {
-      ...formData,
+      nome: formData.nome,
+      telefone: formData.telefone,
+      StatusUsuario: formData.statusUnidade,
+      nomeResponsavel: formData.nomeResponsavel,
+      telefoneResponsavel: formData.telefoneResponsavel,
       endereco: {
-        logradouro: formData.logradouro,
-        cidade: formData.cidade
+        rua: formData.rua,
+        numero: formData.numero,
+        complemento: formData.complemento,
+        bairro: formData.bairro,
+        cidade: formData.cidade,
+        estado: formData.estado,
+        cep: formData.cep
       }
     };
     
@@ -65,6 +89,7 @@ const UnidadeForm = ({ onFormSubmit, unidadeEmEdicao, onCancel }) => {
   };
 
   return (
+    // 4. JSX ATUALIZADO com todos os novos campos de input
     <form onSubmit={handleSubmit} className="unidade-form">
       <h3>{unidadeEmEdicao ? 'Editar Unidade' : 'Adicionar Nova Unidade'}</h3>
       {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -84,14 +109,39 @@ const UnidadeForm = ({ onFormSubmit, unidadeEmEdicao, onCancel }) => {
           <option value="INATIVO">Inativo</option>
         </select>
       </div>
+      <hr />
+      <h4>Endereço</h4>
       <div className="form-group">
-        <label>Endereço (Logradouro):</label>
-        <input type="text" name="logradouro" value={formData.logradouro} onChange={handleChange} />
+        <label>Rua:</label>
+        <input type="text" name="rua" value={formData.rua} onChange={handleChange} />
       </div>
       <div className="form-group">
-        <label>Endereço (Cidade):</label>
+        <label>Número:</label>
+        <input type="text" name="numero" value={formData.numero} onChange={handleChange} />
+      </div>
+       <div className="form-group">
+        <label>Complemento:</label>
+        <input type="text" name="complemento" value={formData.complemento} onChange={handleChange} />
+      </div>
+      <div className="form-group">
+        <label>Bairro:</label>
+        <input type="text" name="bairro" value={formData.bairro} onChange={handleChange} />
+      </div>
+      <div className="form-group">
+        <label>Cidade:</label>
         <input type="text" name="cidade" value={formData.cidade} onChange={handleChange} />
       </div>
+      <div className="form-group">
+        <label>Estado:</label>
+        <input type="text" name="estado" value={formData.estado} onChange={handleChange} />
+      </div>
+       <div className="form-group">
+        <label>CEP:</label>
+        <input type="text" name="cep" value={formData.cep} onChange={handleChange} />
+      </div>
+      <hr />
+
+      <h4>Responsável</h4>
       <div className="form-group">
         <label>Nome do Responsável:</label>
         <input type="text" name="nomeResponsavel" value={formData.nomeResponsavel} onChange={handleChange} />
